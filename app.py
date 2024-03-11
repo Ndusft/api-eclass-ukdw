@@ -291,6 +291,9 @@ def get_detail_tugas(id):
     else:
         return jsonify({'message': 'Gagal mendapatkan informasi detail tugas'}), tugas_url.status_code
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"status": 404, "message": "Not Found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
