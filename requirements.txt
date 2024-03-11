@@ -1,4 +1,3 @@
 flask
 secrets
-requests
 beautifulsoup4
