@@ -1,5 +1,5 @@
-flask
 re
-beautifulsoup4
+flask
 secrets
 requests
+beautifulsoup4
