@@ -1,0 +1,5 @@
+flask
+re
+bs4
+secrets
+requests
