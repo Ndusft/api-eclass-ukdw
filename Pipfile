@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 flask = "*"
 beautifulsoup4 = "*"
+requests = "*"
 
 [requires]
 python_version = "3.9"
