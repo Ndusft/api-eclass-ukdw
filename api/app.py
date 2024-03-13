@@ -1,10 +1,17 @@
 import re
+import random
+import string
 from api.eclass import EClass
 from bs4 import BeautifulSoup as bs
 from flask import Flask, request, session, jsonify
 
 app = Flask(__name__)
-app.secret_key = '00ba737acc44f4853c36e416a6dd7b03'
+
+def generate_random_hex(length):
+    hex_characters = string.hexdigits[:-6]
+    return ''.join(random.choice(hex_characters) for _ in range(length))
+
+app.secret_key = generate_random_hex(16)
 
 eclass_instance = None
 
