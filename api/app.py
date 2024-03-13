@@ -1,11 +1,9 @@
 import re
-import secrets
 from eclass import EClass
 from bs4 import BeautifulSoup as bs
 from flask import Flask, request, session, jsonify
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
 
 eclass_instance = None
 
