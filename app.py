@@ -34,10 +34,11 @@ def login():
     if 'nim' in data and 'password' in data:
         nim = data['nim']
         password = data['password']
-        if eclass_instance is None:
+        if eclass_instance is None or eclass_instance.session is None:
             eclass_instance = EClass(nim, password)
-        elif eclass_instance.session is None:
+        else:
             eclass_instance = EClass(nim, password)
+
         if eclass_instance.login():
             session['nim'] = nim
             session['password'] = password
@@ -290,6 +291,47 @@ def get_detail_tugas(id):
         return jsonify({'result': result}), 200
     else:
         return jsonify({'message': 'Gagal mendapatkan informasi detail tugas'}), tugas_url.status_code
+
+@app.route('/get_presensi/<id>', methods=['GET'])
+def get_presensi(id):
+    global eclass_instance
+    if eclass_instance is None:
+        return jsonify({'message': 'Instance EClass tidak tersedia. Silakan login terlebih dahulu'}), 401
+
+    if not eclass_instance.session:
+        return jsonify({'message': 'Sesi login tidak tersedia. Silakan login terlebih dahulu'}), 401
+
+    eclass_session = eclass_instance.create_session()
+    presensi_url = eclass_session.get(f'https://eclass.ukdw.ac.id/e-class/id/kelas/presensi/{id}')
+
+    if presensi_url.status_code == 200:
+        soup = bs(presensi_url.text, 'html.parser')
+        form = soup.find('form')
+
+        if form is None:
+            return jsonify({'error': 'Presensi belum tersedia'})
+
+        p_pertemuanke_input = form.find('input', {'name': 'p_pertemuanke'})
+        p_idpresensi_input = form.find('input', {'name': 'p_idpresensi'})
+
+        if p_pertemuanke_input is None or p_idpresensi_input is None:
+            return jsonify({'error': 'Presensi belum terbuka!'})
+
+        p_pertemuanke = p_pertemuanke_input.get('value')
+        p_idpresensi = p_idpresensi_input.get('value')
+
+        post_data = {
+            'presensi_hadir': 'HADIR',
+            'p_pertemuanke': p_pertemuanke,
+            'p_idpresensi': p_idpresensi
+        }
+
+        response = eclass_session.post(presensi_url.url, data=post_data)
+
+        if response.status_code == 200:
+            return jsonify({'message': 'Presensi berhasil'})
+        else:
+            return jsonify({'error': 'Presensi gagal'})
 
 @app.errorhandler(404)
 def page_not_found(e):
