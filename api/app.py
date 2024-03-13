@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as bs
 from flask import Flask, request, session, jsonify
 
 app = Flask(__name__)
+app.secret_key = '00ba737acc44f4853c36e416a6dd7b03'
 
 eclass_instance = None
 
