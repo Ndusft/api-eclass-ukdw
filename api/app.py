@@ -1,5 +1,5 @@
 import re
-from eclass import EClass
+from api.eclass import EClass
 from bs4 import BeautifulSoup as bs
 from flask import Flask, request, session, jsonify
 
